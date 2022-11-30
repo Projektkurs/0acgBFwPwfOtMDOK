@@ -34,7 +34,7 @@ fn main(){
     let _ = Command::new("sleep").arg("5").spawn().unwrap().wait(); 
 
     //xauth to let root allow to use the display
-    let _ = Command::new("bash").args(["-c","xauth add $(xauth -f ~pk/.Xauthority list | tail -1)"]).spawn().unwrap().wait();
+    //let _ = Command::new("bash").args(["-c","xauth add $(xauth -f ~pk/.Xauthority list | tail -1)"]).spawn().unwrap().wait();
     let _ = Command::new("./smartclock/build/linux/arm64/release/bundle/smartclock").spawn().expect("smartclock binary not found.");
     let _ = Command::new("sleep").arg("10").spawn().unwrap().wait();
     let _ = Command::new("wmctrl").args(["-r","smartclock","-b","add,fullscreen"]).spawn().unwrap().wait();
@@ -47,7 +47,7 @@ fn main(){
             let _ffmpeg= Command::new("ffmpeg").args(["-vcodec","png","-i","./screen.png","-vcodec","rawvideo","-f","rawvideo","-pix_fmt","gray","output.raw"]).spawn().unwrap().wait();
             let buffer= std::fs::read(std::path::Path::new("./output.raw")).unwrap();
             epaper.writeimage(buffer);
-            let _ = Command::new("sleep").arg("5").spawn().unwrap().wait();
+            let _ = Command::new("sleep").arg("50").spawn().unwrap().wait();
             //readasynync().await;
     
         //if the programm would not run indefinitly, drop would need to be called seperatly as it also shutdowns the epaper

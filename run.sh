@@ -13,12 +13,9 @@ sudo echo "got root rights"
 cargo build --release -Z sparse-registry #sparse-registry reduces compile times massivly on a raspberry pi
 bash -c "cd webserver; cargo build --release -Z sparse-registry" 
 
+#allow root to start smartclock
+xhost local:root
 #start execution
 sudo bash -c "export HOME=$HOME ;cd webserver ; target/release/webserver" &
-sudo su -c "xauth add \$(xauth -f ~pk/.Xauthority list | tail -1) ; target/release/rust ;" 
-
-#set smartclock to fullscreen
-#while true; do
-#wmctrl -r smartclock -b add,fullscreen
-#sleep 5
-#done
+#sudo su -c "xauth add \$(xauth -f ~pk/.Xauthority list | tail -1) ; target/release/rust ;" 
+sudo su -c "target/release/rust"

@@ -13,4 +13,4 @@ this can be done with ```./run.sh buildflutter```. It starts the programm afterw
 
 the default ip of the application is 192.168.0.201:8000. This can be changed in webserver/Rocket.toml
  
-debuging: rm .Xauthority
+debuging: rm .Xauthority and restart. This is needed if the display :0 cannot be opened
