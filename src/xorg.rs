@@ -1,3 +1,8 @@
+/* xorg.rs - mounts to display with given mode
+ *
+ * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
+ */
+
 use x11::{xlib,xrandr};
 use std::process::Command;
 

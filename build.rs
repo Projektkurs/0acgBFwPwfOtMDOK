@@ -1,12 +1,15 @@
-extern crate bindgen;
-//use cc;
+/* build.rs - build process
+ *
+ * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
+ */
 
+extern crate bindgen;
 use std::env;
 use std::path::PathBuf;
 
-fn main() {
-    let _i=0;
-    //let out_path = PathBuf::from(env::var("OUT_DIR").unwrap()).join("IT8951");
+fn main(){
+
+    //build IT8951 
     let dst =cmake::Config::new("./")
         .no_build_target(true)
         //.out_dir(out_path)
@@ -51,25 +54,20 @@ fn x11(){
     }
 }
 fn epaper(){
-    //cc::Build::new()
-    //    .file("../lib/e-Paper/EPD_IT8951.c")
-    //    .compile("foo");
 
+    //link IT8951 static libary
     println!("cargo:rustc-link-search=IT8951-ePaper/Raspberry/lib");
     println!("cargo:rustc-link-search={}{}",env::var("OUT_DIR").unwrap(),"/build");
-    //println!("cargo:rustc-link-lib=../build/libIT8951.a");
     println!("cargo:rustc-link-lib=IT8951");
     println!("cargo:rustc-link-lib=bcm2835");
 
-
+    //bind IT8951
     println!("cargo:rerun-if-changed=wrapper.h");
-
     let bindings = bindgen::Builder::default()
     .header("wrapper.h")
     .parse_callbacks(Box::new(bindgen::CargoCallbacks))
     .generate()
     .unwrap();
-
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
     bindings
         .write_to_file(out_path.join("bindings.rs"))

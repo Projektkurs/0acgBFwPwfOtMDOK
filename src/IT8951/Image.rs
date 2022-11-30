@@ -1,3 +1,8 @@
+/* IT8951/Image.rs - unfinished type system for IT8951 
+ *
+ * Copyright 2022 by Ben Mattes Krusekamp <ben.krause05@gmail.com>
+ */
+
 
 #[derive(Clone, Copy)]
 pub enum ImageDepth{
