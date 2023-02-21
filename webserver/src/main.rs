@@ -5,6 +5,7 @@
 
  #[macro_use] extern crate rocket;
 use std::io::Write;
+extern crate libc;
 
 //prints out input into config and writes "generalconfig" into the updatefifo
 #[post("/", data = "<data>")]
@@ -27,6 +28,10 @@ async fn writeconf(data: String){
 
 #[launch]
 fn rocket() -> _ {
+    //creates fifo. As the programm will not fail if the file exits, it is not checked
+    let path = std::ffi::CString::new("myfifo").unwrap();
+    unsafe{libc::mkfifo(path.as_ptr(), 0o644)};
+
     rocket::build()
         .mount("/config", routes![writeconf])
         .mount("/generalconfig", routes![writegconf])

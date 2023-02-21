@@ -1,0 +1,53 @@
+[package]
+name = "x11-imageprocessor"
+version = "0.1.0"
+edition = "2021"
+[dependencies]
+x11="2.20.0"
+libc = "0.2"
+termion = "2.0.1"
+rand = "0.8.5"
+
+[build-dependencies]
+pkg-config = "0.3"
+#epaper
+
+[features]
+printtime = []
+default = ["xrandr","xlib"]
+all = ["dpms", 
+        "glx", 
+        "xcursor", 
+        "xf86vmode", 
+        "xft", 
+        "xinerama", 
+        "xinput", 
+        "xlib", 
+        "xlib_xcb", 
+        "xmu", 
+        "xrandr", 
+        "xrecord",
+        "xrender", 
+        "xss", 
+        "xt", 
+        "xtest", 
+        "xtst", 
+        "dox"]
+dpms = []
+glx = []
+xcursor = []
+xf86vmode = []
+xft = []
+xinerama = []
+xinput = []
+xlib = []
+xlib_xcb = []
+xmu = []
+xrandr = []
+xrecord = ["xtst"]
+xrender = []
+xss = []
+xt = []
+xtest = ["xtst"]
+xtst = []
+dox = [] 

@@ -1,0 +1,10 @@
+config
+configs
+/screen.png
+/image.bin
+/target
+/smartclock
+/IT8951-ePaper
+/build
+.vscode-ctags
+/webserver/target

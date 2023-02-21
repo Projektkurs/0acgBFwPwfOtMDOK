@@ -1,7 +1,7 @@
 config
 configs
 /screen.png
-/output.raw
+/image.bin
 /target
 /smartclock
 /IT8951-ePaper
