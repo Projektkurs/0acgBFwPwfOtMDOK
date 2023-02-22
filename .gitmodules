@@ -1,9 +1,9 @@
-[submodule "IT8951-ePaper"]
-	path = ePaper-com/IT8951-ePaper
-	url = https://github.com/luposmi/IT8951-ePaper
-[submodule "smartclock"]
-	path = smartclock
-	url = https://github.com/Projektkurs/smartclock
+#[submodule "IT8951-ePaper"]
+#	path = ePaper-com/IT8951-ePaper
+#	url = https://github.com/luposmi/IT8951-ePaper
+#[submodule "smartclock"]
+#	path = smartclock
+#	url = https://github.com/Projektkurs/smartclock
 [submodule "ePaper-com/IT8951-ePaper"]
 	path = ePaper-com/IT8951-ePaper
 	url = https://github.com/waveshare/IT8951-ePaper

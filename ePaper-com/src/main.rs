@@ -35,16 +35,17 @@ fn main(){
     println!("b:{}",epaper.info.Memory_Addr_H);
     println!("target:{}",epaper.gettargetaddr());
     epaper.clear();
-    let _ = Command::new("sleep").arg("5").spawn().unwrap().wait(); 
+    //let _ = Command::new("sleep").arg("5").spawn().unwrap().wait(); 
 
     //xauth to let root allow to use the display
     //let _ = Command::new("bash").args(["-c","xauth add $(xauth -f ~pk/.Xauthority list | tail -1)"]).spawn().unwrap().wait();
     //let _ = Command::new("./smartclock/build/linux/arm64/release/bundle/smartclock").spawn().expect("smartclock binary not found.");
-    let _ = Command::new("sleep").arg("10").spawn().unwrap().wait();
+    ////let _ = Command::new("sleep").arg("10").spawn().unwrap().wait();
     while fifo_reader.read_line(&mut fifo_line).unwrap() > 0 {
         #[cfg(debug_assertions)]
         println!("updating file");
         let buffer= std::fs::read(std::path::Path::new("../image.bin")).unwrap();
+        //let buffer= vec![100_u8;1200*825];
         epaper.writeimage(buffer);
         //println!("{}", line);
         fifo_line.clear();
