@@ -2,7 +2,7 @@ use x11::xlib;
 
 use std::{
     ffi::c_uchar,
-    io::Write,
+    io::{Write,Seek},
     ops::Deref,
     sync::{Arc, Mutex},
     thread,
@@ -15,7 +15,7 @@ use std::{
 /// This buffer is writen to imagefile and b"rewrite\n" is writen to the given fifo.
 /// Both files are just locked for there respected write operation.
 /// However, too many screenshots should not be taken at the same time, as this could lead to x11 crashing
-pub fn updateepaper(imagefile: Arc<Mutex<std::fs::File>>, fifo: Arc<Mutex<std::fs::File>>) {
+pub fn updateepaper(imagefile: &mut std::fs::File, fifo: &mut std::fs::File) {
     let total = Instant::now();
     let mut ms = Instant::now();
     // Open a connection to the X11 server
@@ -74,7 +74,8 @@ pub fn updateepaper(imagefile: Arc<Mutex<std::fs::File>>, fifo: Arc<Mutex<std::f
                             pixel as c_uchar,
                         )
                     };
-                    let brightness = ((r as u16) + (g as u16) + (b as u16) / 3) as c_uchar;
+                    let brightness = (((r as u16) + (g as u16) + (b as u16)) / 3) as c_uchar;
+                    //let brightness = r;
                     let offset = (y * width + x) as usize;
                     unsafe {
                         std::ptr::write(std::mem::transmute(vec_buffer_ptr + offset), brightness);
@@ -94,17 +95,19 @@ pub fn updateepaper(imagefile: Arc<Mutex<std::fs::File>>, fifo: Arc<Mutex<std::f
     ms = printtimedif(ms, "rassamble buffer:");
 
     // Write the buffer into an imagebuffer
-    {
-        let file = imagefile.lock().unwrap();
-        let mut writer = std::io::BufWriter::new(file.deref());
+    //{
+        let file = imagefile;//.lock().unwrap();
+        file.set_len(0).unwrap();
+        file.seek(std::io::SeekFrom::Start(0)).unwrap();
+        let mut writer = std::io::BufWriter::new(file);
         writer.write_all(vec_buffer.as_slice()).unwrap();
         ms = printtimedif(ms, "write image:");
-    }
-    {
-        let file = fifo.lock().unwrap();
+    //}
+    //{
+        let file = fifo;//.lock().unwrap();
         println!("writing to file");
-        file.deref().write(b"rewrite\n").unwrap();
-    }
+        file.write(b"rewrite\n").unwrap();
+    //}
     // Clean up
     unsafe {
         xlib::XDestroyImage(ximage);

@@ -44,6 +44,8 @@ fn main(){
     while fifo_reader.read_line(&mut fifo_line).unwrap() > 0 {
         #[cfg(debug_assertions)]
         println!("updating file");
+        //let _ = Command::new("bash").args(["-c","wmctrl -r helperpaper -b add,fullscreen"]).spawn().unwrap().wait();
+        //let _ = Command::new("wmctrl").args(["-r","helperpaper","-b","add,fullscreen"]).spawn().unwrap().wait();
         let buffer= std::fs::read(std::path::Path::new("../image.bin")).unwrap();
         //let buffer= vec![100_u8;1200*825];
         epaper.writeimage(buffer);
@@ -51,7 +53,7 @@ fn main(){
         fifo_line.clear();
     }
 
-    //let _ = Command::new("wmctrl").args(["-r","smartclock","-b","add,fullscreen"]).spawn().unwrap().wait();
+    //
         /*loop {
             //wmctrl sometimes doesn't work. It is also called in run.sh
             //let _ = Command::new("wmctrl").args(["-r","smartclock","-b","add,fullscreen"]).spawn().unwrap().wait();

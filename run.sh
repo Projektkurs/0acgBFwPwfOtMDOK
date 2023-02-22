@@ -4,12 +4,16 @@
 #
 # note that smartclock needs to be built manually with 
 
-if [ $1 == buildflutter ]; then 
-    export PATH=$PATH:~/dev/flutter/bin #if flutter is already in the PATH or in a different location, delete this line
-    bash -c "cd smartclock ;flutter build linux --dart-define=isepaper=true"
-fi
+#if [ $1 == buildflutter ]; then 
+#    export PATH=$PATH:~/dev/flutter/bin #if flutter is already in the PATH or in a different location, delete this line
+#    bash -c "cd smartclock ;flutter build linux --dart-define=isepaper=true"
+#fi
 
 sudo echo "got root rights"
+bash -c "cd z8CEK6uP25BmnnVk; ./build/linux/arm64/release/bundle/helperpaper" &
+sleep 10
+wmctrl -r helperpaper -b add,fullscreen
+sleep 5
 #cargo build --release -Z sparse-registry #sparse-registry reduces compile times massivly on a raspberry pi
 #bash -c "cd webserver; cargo build --release -Z sparse-registry" 
 echo "starting ePaper communication"

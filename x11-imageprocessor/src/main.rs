@@ -12,10 +12,12 @@ mod xmount;
 use std::fs::{File, OpenOptions};
 //use std::io::prelude::*;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
-
+use std::io::BufReader;
+use std::io::prelude::*;
 use std::sync::{Arc, Mutex};
 use std::thread;
-
+use std::ops::Deref;
+use std::ops::DerefMut;
 fn main() {
     let width = 1200;
     let height = 825;
@@ -46,8 +48,9 @@ fn main() {
     // let x11_flutter_fifo = Arc::new(Mutex::new(File::create("x11_flutter_fifo").unwrap()));
     // let x11_web_fifo = Arc::new(Mutex::new(File::create("web_x11_fifo").unwrap()));
     //sleeps for one second
-    ximage::updateepaper(imagefile.clone(), x11_epaper_fifo.clone());
-
+    ximage::updateepaper(imagefile.lock().unwrap().deref_mut(), x11_epaper_fifo.lock().unwrap().deref_mut());
+    let x11_epaper_fifo_c = Arc::clone(&x11_epaper_fifo);
+    let imagefile_c = Arc::clone(&imagefile);
     let time_update: thread::JoinHandle<()> = thread::spawn(move || {
         loop {
             let start_time = Instant::now();
@@ -64,7 +67,8 @@ fn main() {
                     now_since_unix.as_secs() - last_since_unix.as_secs()
                 );
                 if now_since_unix.as_secs() / 60 > last_since_unix.as_secs() / 60 {
-                    ximage::updateepaper(imagefile.clone(), x11_epaper_fifo.clone());
+                    //ximage::updateepaper(imagefile.clone(), x11_epaper_fifo.clone());
+                    ximage::updateepaper(imagefile_c .lock().unwrap().deref_mut(), x11_epaper_fifo_c.lock().unwrap().deref_mut());
                     *lastupdate = SystemTime::now();
                 }
             }
@@ -73,7 +77,27 @@ fn main() {
             thread::sleep(Duration::from_secs(1) - elapsed);
         }
     });
-    //let handles: thread::JoinHandle<()> =thread::spawn(move || {}) ;
+    let webserver_update: thread::JoinHandle<()> =thread::spawn(move || {
+        println!("open webserver_fifo");
+        let webserver_fifo = 
+        OpenOptions::new()
+            .read(true)
+            //.custom_flags(libc::O_NONBLOCK)
+            .open("../webserver_x11_fifo")
+            .unwrap();
+        println!("opened webserver_fifo");
+        let mut fifo_reader = BufReader::new(webserver_fifo);
+        let mut fifo_line = String::new();
+        while fifo_reader.read_line(&mut fifo_line).unwrap() > 0 {
+            println!("read from webserver_x11_fifo");
+            //ximage::updateepaper(imagefile.clone(), x11_epaper_fifo.clone());
+            ximage::updateepaper(imagefile.lock().unwrap().deref_mut(), x11_epaper_fifo.lock().unwrap().deref_mut());
+            fifo_line.clear();
+        }
+
+
+    }) ;
     //let handles: thread::JoinHandle<()> =thread::spawn(move || {}) ;
     time_update.join().unwrap();
+    webserver_update.join().unwrap();
 }
